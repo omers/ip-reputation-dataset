@@ -20,15 +20,16 @@ jobs:
         # you might need to specify it with 'ref: branch-name'
 
       - name: Download File
+      uses: actions/setup-python@v6 # Install Python
+        with:
+          python-version: 3.12
+
+      - name: Install dependencies
         run: |
-          # Replace <YOUR_FILE_URL> and desired_filename.ext
-          curl -sL "<YOUR_FILE_URL>" -o desired_filename.ext
-          
-          # Optional: Add error checking for the download
-          if [ $? -ne 0 ]; then
-            echo "::error::File download failed"
-            exit 1
-          fi
+          pip install -r requirements.txt
+
+        run: |
+          python main.py
 
       - name: Commit and Push Changes (Using Shell Commands)
         run: |
@@ -37,14 +38,14 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           # Add the downloaded file (and any other changed files)
-          git add desired_filename.ext
+          git add proofpoint_ip_reputation.csv
 
           # Check if there are any changes to commit (optional but good practice)
           if git diff --staged --quiet; then
             echo "No changes to commit."
           else
             # Commit the changes
-            git commit -m "Automated daily update of desired_filename.ext"
+            git commit -m "Automated daily update of proofpoint_ip_reputation.csv"
             
             # Push the changes
             git push
