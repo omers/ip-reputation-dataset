@@ -20,7 +20,7 @@ jobs:
         # you might need to specify it with 'ref: branch-name'
 
       - name: Download File
-      uses: actions/setup-python@v6 # Install Python
+        uses: actions/setup-python@v6 # Install Python
         with:
           python-version: 3.12
 
