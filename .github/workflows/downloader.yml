@@ -27,8 +27,6 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-
-        run: |
           python main.py
 
       - name: Commit and Push Changes (Using Shell Commands)
