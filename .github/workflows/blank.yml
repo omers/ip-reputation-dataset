@@ -1,0 +1,51 @@
+name: Daily File Update
+
+on:
+  schedule:
+    # Runs every day at 00:00 UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allows manual trigger
+
+# Grant the GITHUB_TOKEN write permission for committing and pushing
+permissions:
+  contents: write
+
+jobs:
+  update-file:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        # Note: If you want to push to a specific branch other than the default, 
+        # you might need to specify it with 'ref: branch-name'
+
+      - name: Download File
+        run: |
+          # Replace <YOUR_FILE_URL> and desired_filename.ext
+          curl -sL "<YOUR_FILE_URL>" -o desired_filename.ext
+          
+          # Optional: Add error checking for the download
+          if [ $? -ne 0 ]; then
+            echo "::error::File download failed"
+            exit 1
+          fi
+
+      - name: Commit and Push Changes (Using Shell Commands)
+        run: |
+          # Configure Git user
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Add the downloaded file (and any other changed files)
+          git add desired_filename.ext
+
+          # Check if there are any changes to commit (optional but good practice)
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            # Commit the changes
+            git commit -m "Automated daily update of desired_filename.ext"
+            
+            # Push the changes
+            git push
+          fi
